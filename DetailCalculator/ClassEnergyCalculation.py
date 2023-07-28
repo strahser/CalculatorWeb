@@ -58,7 +58,7 @@ def round_format(data, acc=1):
 # endregion
 
 def render_docx(doc: str, short_context: dict, out_folder, suffix=""):
-	""" рендер пояснительной записки"""
+	""" рендер пояснительной записки suffix для имени файла"""
 	doc.render(short_context)
 	file_name = f"Энергоэффектвиность_{suffix}_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}.docx"
 	doc.save(os.path.join(out_folder, file_name))
@@ -194,5 +194,6 @@ def energy_class_calculation(input_data: InputData, path_to_excel_table_order_39
 		q_ee=q_ee,
 		n_str=n_str,
 	)
-	print(n_str)
+	for key,val in short_context.items():
+		print(f"{key}:{val}")
 	return short_context
