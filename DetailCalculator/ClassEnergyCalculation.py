@@ -2,13 +2,10 @@
 from __future__ import division
 import os
 from dataclasses import dataclass
-
 import locale
 import pandas as pd
-
 locale.setlocale(locale.LC_ALL, '')
 locale.currency(1234567.89, grouping=True)
-import datetime
 
 from EnergyCompare.Process.DataTableInterpolation import DataTableInterpolation
 
@@ -57,11 +54,7 @@ def round_format(data, acc=1):
 
 # endregion
 
-def render_docx(doc: str, short_context: dict, out_folder, suffix=""):
-    """ рендер пояснительной записки suffix для имени файла"""
-    doc.render(short_context)
-    file_name = f"Энергоэффектвиность_{suffix}_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}.docx"
-    doc.save(os.path.join(out_folder, file_name))
+
 
 
 def get_base_q_value(gsop: float, level_number: int, path_to_excel_table_order_399_table1: str):
