@@ -2,12 +2,15 @@
 import os
 import inspect
 import sys
+
+from Utils.Render import render_docx
+
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(parent_dir)
 sys.path.insert(0, parent_dir)
 sys.path.insert(0, root_dir)
-from DetailCalculator.ClassEnergyCalculation import InputData,render_docx,energy_class_calculation
+from DetailCalculator.ClassEnergyCalculation import InputData,energy_class_calculation
 from docxtpl import DocxTemplate
 from DB.ExcelDBPath import ExcelDBPath
 

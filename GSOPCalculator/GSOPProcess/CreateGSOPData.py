@@ -7,12 +7,6 @@ from Utils.Calculation import _filter_df
 from GSOPCalculator.Static.GSOPNamesStatic import GSOPNamesStatic
 
 
-
-
-
-
-
-
 @dataclass
 class CalculateGSOP:
 	original_df: pd.DataFrame
@@ -58,5 +52,3 @@ class CalculateGSOP:
 		df = self.original_df.copy()
 		df[GSOPNamesStatic.region] = df[GSOPNamesStatic.region].ffill()
 		return df
-
-

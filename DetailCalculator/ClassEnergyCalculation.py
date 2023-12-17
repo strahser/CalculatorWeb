@@ -115,6 +115,8 @@ def energy_class_calculation(input_data: InputData, path_to_excel_table_order_39
     Kef_gvs: float = input_data.Kef_gvs  # Коэффициент эффективности использования ГВС
     q_ee: float = input_data.q_ee  # Удельный годовой расход электрической энергии на общедомовые нужды МКД, оборудованных лифтом
     input_dict_out = create_input_render_dictionary(input_data=input_data)
+    V_gv = 70#Расчетный нормативный среднесуточный расход горячей воды на человека vгв, л/(сут*чел)
+    #- с ваннами длиной от 1500 мм, оборудованными душами
     # endregion
     # region EnergyCalculation
     """ Определяем базовое значение энергопотребления"""
@@ -133,8 +135,8 @@ def energy_class_calculation(input_data: InputData, path_to_excel_table_order_39
     """
     Определяем среднесуточный расход горячей воды для квартир МКД за сутки, м3/сут:
     """
-    Vgv_g = round(85 * Ng * 0.001 * ((zot + alfa * (355 - zot)) / 365), 2)
-    Vgv_g_str = f"85*{Ng}*0.001*(({zot}+{alfa}*(355-{zot}))/365) = {round_format(Vgv_g)}"
+    Vgv_g = round(V_gv * Ng * 0.001 * ((zot + alfa * (355 - zot)) / 365), 2)
+    Vgv_g_str = f"{V_gv}*{Ng}*0.001*(({zot}+{alfa}*(355-{zot}))/365) = {round_format(Vgv_g)}"
     """
     Определяем среднесуточный расход горячей воды для нежилой части МКД за сутки, м3/сут:
     """
@@ -174,6 +176,7 @@ def energy_class_calculation(input_data: InputData, path_to_excel_table_order_39
     # endregion
     short_context = dict(
         input_dict_out=input_dict_out,
+        V_gv= V_gv,
         Qgod_ot_str=Qgod_ot_str,
         qot_str=qot_str,
         Vgv_g_str=Vgv_g_str,
@@ -187,6 +190,5 @@ def energy_class_calculation(input_data: InputData, path_to_excel_table_order_39
         q_ee=q_ee,
         n_str=n_str,
     )
-    for key, val in short_context.items():
-        print(f"{key}:{val}")
+
     return short_context
