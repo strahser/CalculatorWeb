@@ -17,7 +17,7 @@ class RenderModel:
 		возвращает строку в ввиде арифмитечских операций переданного метода переданного итератора
 		"""
 		join_list = [
-			str(round(getattr(val, func_name)(), 1))
+			str(round(getattr(val, func_name)(), 2))
 			if isinstance(getattr(val, func_name)(), float | int)
 			else str(getattr(val, func_name)())
 			for val in iterable_

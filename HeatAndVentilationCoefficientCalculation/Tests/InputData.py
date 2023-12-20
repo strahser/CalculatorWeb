@@ -107,7 +107,8 @@ room1 = Room(human_number=332,
              t_in_building=climate_data.t_in,
              t_ot=climate_data.t_ot_middle,
              category=Category.living,
-             room_heated_volume=24751)
+             room_heated_volume=24751,
+             room_type="Жилое")
 room2 = Room(floor_area_living=1229,
              t_in_room=18,
              t_in_building=climate_data.t_in,
@@ -115,21 +116,24 @@ room2 = Room(floor_area_living=1229,
              category=Category.living,
              human_number=3,
              structures=structures2,
-             room_heated_volume=6303)
+             room_heated_volume=6303,
+				room_type="Жилое")
 room3 = Room(floor_area_living=3500,
              t_in_room=8,
              t_in_building=climate_data.t_in,
              t_ot=climate_data.t_ot_middle,
              category=Category.living,
              structures=structures3,
-             room_heated_volume=3175)
+             room_heated_volume=3175,
+             room_type="Техническое")
 room4 = Room(floor_area_living=3500,
              t_in_room=8,
              t_in_building=climate_data.t_in,
              t_ot=climate_data.t_ot_middle,
              category=Category.living,
              structures=structures4,
-             room_heated_volume=3175)
+             room_heated_volume=3175,
+             room_type="Техническое")
 building = Building(
 	climate_data=climate_data,
 	heated_volume=34229,

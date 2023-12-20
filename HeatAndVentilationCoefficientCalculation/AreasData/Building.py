@@ -18,7 +18,6 @@ class Building:
 	level_number: int
 	level_height: float
 	rooms: [Room]
-	sum_arn: float = 0
 	all_structures: [Structure] = field(default_factory=list)
 
 	def __post_init__(self) -> None:
@@ -29,9 +28,6 @@ class Building:
 			for structure in room.structures.structures_list:
 				structure.gsop = self.climate_data.GSOP
 				self.all_structures.append(structure)
-		self.sum_arn = sum([structure.a_r_n for structure in self.all_structures])
-		for structure in self.all_structures:
-			structure.percent_a_r_n = round(100 * structure.a_r_n / self.sum_arn, 2)
 
 	def get_building_total_structure_area(self) -> RenderModelList:
 		"""общая площадь наружных конструкций здания"""
@@ -47,6 +43,10 @@ class Building:
 		return sum(
 			[room.structures.get_structure_heat_resistence_total_coefficient().output_value for room in self.rooms])
 
+	def get_normativ_building_structure_heat_resistence_total_coefficient(self) -> RenderModel:
+		"""общий коэффициент теплопередачи здания"""
+		return CheckConditions.k_total_norm(self.climate_data.GSOP, self.heated_volume)
+
 	def get_building_compact_coefficient(self) -> float:
 		"""коэффициент компактности здания"""
 		k_comp = self.get_building_total_structure_area().output_value / self.heated_volume
@@ -61,9 +61,9 @@ class Building:
 		output_render_value = [room.structures.get_structure_heat_resistence_total_coefficient_local() for room in
 		                       self.rooms]
 		return RenderModelList(render_name="Удельная теплозащитная характеристика здания",
-		                output_value=output_value,
-		                output_render_list=output_render_value,
-		                key="building_total_structure_area")
+		                       output_value=output_value,
+		                       output_render_list=output_render_value,
+		                       key="building_structure_heat_resistence_total_coefficient_local")
 
 	def get_building_sun_radiation_coefficient(self, sun_radiation_data: dict[str, int]) -> float:
 		"""Удельная характеристика теплопоступлений в здании от солнечной радиации вт/м3*c"""
@@ -104,5 +104,6 @@ class Building:
 		v = StaticCoefficientHeatTransmission.heat_inertia_coefficient(self.climate_data.GSOP)
 		z = StaticCoefficientHeatTransmission.z_0_95
 		q_addition_heat = v * z * (k_domestic + k_radiation)
-		q_heat = (k_structure + k_vent - q_addition_heat) * (1 - 0.1) * StaticCoefficientAdditionHeat.b_h_1_1_3
+		q_heat = (k_structure.output_value + k_vent - q_addition_heat) * (
+					1 - 0.1) * StaticCoefficientAdditionHeat.b_h_1_1_3
 		return q_heat

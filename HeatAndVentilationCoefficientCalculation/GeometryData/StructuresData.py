@@ -12,25 +12,25 @@ class Structure:
 	R_norm: float = field(init=False)
 	gsop: float
 	orientation: str = None
+	room_type: str = None
 	short_name: str = ""
-	_n_temperature_koef: float = 1
-	a_r_n: float = field(init=False)  # self.n_temperature_koef * (self.area / self.R_real)
-	percent_a_r_n: float = 0
+	label: str = ""
+	_n_temperature_coefficient: float = 1
 
 	def __post_init__(self):
-		self.a_r_n = round(self.get_structure_temperature_heat_coefficient_local(),1)
+		# self.a_r_n = round(self.get_structure_temperature_heat_coefficient_local(),2)
 		self.get_norm_terminal_resistence()
 
 	def get_norm_terminal_resistence(self) -> None:
 		self.R_norm = 0
 
 	@property
-	def n_temperature_koef(self):
-		return self._n_temperature_koef
+	def n_temperature_coefficient(self):
+		return self._n_temperature_coefficient
 
-	@n_temperature_koef.setter
-	def n_temperature_koef(self, value):
-		self._n_temperature_koef = value
+	@n_temperature_coefficient.setter
+	def n_temperature_coefficient(self, value):
+		self._n_temperature_coefficient = value
 
 	def class_name(self):
 		return type(self).__name__
@@ -38,11 +38,12 @@ class Structure:
 	def get_structure_temperature_heat_coefficient_local(self) -> float:
 		"""коэффициент теплоперадачи приведенный
         """
-		return self.n_temperature_koef * (self.area / self.R_real)
+		return self.n_temperature_coefficient * (self.area / self.R_real)
 
 
 @dataclass()
 class Wall(Structure):
+	label: str = "Стена"
 
 	def get_norm_terminal_resistence(self) -> None:
 		self.R_norm = 0.00035 * self.gsop + 1.4  # Стен, включая стены в грунте
@@ -50,7 +51,7 @@ class Wall(Structure):
 
 @dataclass()
 class Door(Structure):
-
+	label: str = "Дверь"
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			R_norm_wall: float = 0.00035 * self.gsop + 1.4  # Стен, включая стены в грунте
@@ -59,6 +60,7 @@ class Door(Structure):
 
 @dataclass()
 class Window(Structure):
+	label: str = "Окно"
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = np.interp(self.gsop, StaticCoefficientStructures.normal_window_gsop_base,
@@ -68,7 +70,7 @@ class Window(Structure):
 @dataclass()
 class Floor(Structure):
 	# Покрытий и перекрытий над проездами
-
+	label: str = "Перекрытие"
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.0005 * self.gsop + 2.2
@@ -77,7 +79,7 @@ class Floor(Structure):
 @dataclass()
 class Roof(Structure):
 	# Перекрытий чердачных, над неотапливаемыми подпольями и подвалами
-
+	label: str = "Кровля"
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.00045 * self.gsop + 1.9
@@ -86,7 +88,7 @@ class Roof(Structure):
 @dataclass()
 class Skylight(Structure):
 	# -Зенитных фонарей
-
+	label: str = "Зенитный фонарь"
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.000025 * self.gsop + 0.25
@@ -96,7 +98,7 @@ class Skylight(Structure):
 class Structures:
 	"""расчитывает теплотехнические коэффициенты всех ограждений помещения"""
 	structures_list: list[Structure]
-
+	room_type: str =field(init=False)
 	def get_structure_heat_resistence_total_coefficient(self) -> RenderModel:
 		"""общий коэффициент теплопередачи ограждений"""
 		output_value = sum(
@@ -119,7 +121,7 @@ class Structures:
 			[structure.get_structure_temperature_heat_coefficient_local() for structure in self.structures_list])
 		render_list = RenderModel.create_string_list_sum(
 			"get_structure_temperature_heat_coefficient_local", self.structures_list)
-		output_render_value = f"ksum={render_list}={output_value}"
+		output_render_value = f"{render_list}={output_value}"
 		return RenderModel(render_name="суммарный приведенный коэффициент теплопередачи для выбранных ограждений",
 		                   output_value=output_value,
 		                   output_render_value=output_render_value,

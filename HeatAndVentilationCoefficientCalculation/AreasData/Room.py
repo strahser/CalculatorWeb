@@ -12,6 +12,7 @@ from Utils.RenderModel import RenderModel
 class Room(RoomI):
 	structures: Structures
 	category: str
+	room_type:str
 	human_number: int = 1
 	t_in_room: float = 20  # температуры в помещениях
 	t_in_building: float = 20  # расчетная внутренняя температура здания
@@ -29,12 +30,14 @@ class Room(RoomI):
 		self.windows = [val for val in self.structures.structures_list if val.__class__.__name__ == Window.__name__]
 		self._door_area = None
 		self._window_area = None
+		for val in self.structures.structures_list:
+			val.room_type=self.room_type
 
 	def update_room_temperature_coefficient(self):
 		"""Обновляем температурный коэффициент помещения в зависимости от температуры здания (при расчете ГСОП)"""
 		if self.t_in_room != self.t_in_building and self.t_ot:
 			for structure in self.structures.structures_list:
-				structure.n_temperature_koef = StaticCoefficientStructures.temperature_coefficient_n_calculated(
+				structure.n_temperature_coefficient = StaticCoefficientStructures.temperature_coefficient_n_calculated(
 					self.t_ot,
 					self.t_in_building,
 					self.t_in_room
