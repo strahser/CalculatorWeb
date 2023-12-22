@@ -13,10 +13,7 @@ from HeatAndVentilationCoefficientCalculation.RenderData.RenderData import rende
 from Utils.Render import render_docx
 
 short_context = render_data(building)
-pprint(short_context)
-
-
 template_path = os.path.join(parent_dir, "Templates", "Q_heat_and_ventilation_template.docx")
 out_folder = os.path.join(current_dir, "reports")
-# render_docx(template_path=template_path, short_context=short_context, out_folder=out_folder, doc_name="base_data.docx")
-
+pprint(short_context)
+render_docx(template_path=template_path, short_context=short_context, out_folder=out_folder, doc_name="base_data.docx")

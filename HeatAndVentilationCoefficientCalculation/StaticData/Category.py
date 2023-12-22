@@ -1,3 +1,3 @@
 class Category:
-	living = "Жилое Помещение"
-	heating = "Отапливаемое Помещение"
+	living = "Жилое"
+	heating = "Отапливаемое"

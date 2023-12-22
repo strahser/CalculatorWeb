@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 import numpy as np
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientStructures import StaticCoefficientStructures
-from Utils.RenderModel import RenderModel
 
 
 @dataclass()
@@ -52,6 +51,7 @@ class Wall(Structure):
 @dataclass()
 class Door(Structure):
 	label: str = "Дверь"
+
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			R_norm_wall: float = 0.00035 * self.gsop + 1.4  # Стен, включая стены в грунте
@@ -61,6 +61,7 @@ class Door(Structure):
 @dataclass()
 class Window(Structure):
 	label: str = "Окно"
+
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = np.interp(self.gsop, StaticCoefficientStructures.normal_window_gsop_base,
@@ -71,6 +72,7 @@ class Window(Structure):
 class Floor(Structure):
 	# Покрытий и перекрытий над проездами
 	label: str = "Перекрытие"
+
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.0005 * self.gsop + 2.2
@@ -80,6 +82,7 @@ class Floor(Structure):
 class Roof(Structure):
 	# Перекрытий чердачных, над неотапливаемыми подпольями и подвалами
 	label: str = "Кровля"
+
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.00045 * self.gsop + 1.9
@@ -89,50 +92,7 @@ class Roof(Structure):
 class Skylight(Structure):
 	# -Зенитных фонарей
 	label: str = "Зенитный фонарь"
+
 	def get_norm_terminal_resistence(self) -> None:
 		if self.gsop:
 			self.R_norm = 0.000025 * self.gsop + 0.25
-
-
-@dataclass()
-class Structures:
-	"""расчитывает теплотехнические коэффициенты всех ограждений помещения"""
-	structures_list: list[Structure]
-	room_type: str =field(init=False)
-	def get_structure_heat_resistence_total_coefficient(self) -> RenderModel:
-		"""общий коэффициент теплопередачи ограждений"""
-		output_value = sum(
-			[
-				structure.get_structure_temperature_heat_coefficient_local()
-				for structure in self.structures_list
-			]) / self.get_total_structure_area().output_value
-
-		render_list = RenderModel.create_string_list_sum(
-			"get_structure_temperature_heat_coefficient_local", self.structures_list)
-		output_render_value = f"kоб={render_list}/{self.get_total_structure_area().output_value}={output_value}"
-		return RenderModel(render_name="общий коэффициент теплопередачи ограждений",
-		                   output_value=output_value,
-		                   output_render_value=output_render_value,
-		                   key="k_heat_resistence_total")
-
-	def get_structure_heat_resistence_total_coefficient_local(self) -> RenderModel:
-		"""суммарный приведенный коэффициент теплопередачи для выбранных ограждений"""
-		output_value = sum(
-			[structure.get_structure_temperature_heat_coefficient_local() for structure in self.structures_list])
-		render_list = RenderModel.create_string_list_sum(
-			"get_structure_temperature_heat_coefficient_local", self.structures_list)
-		output_render_value = f"{render_list}={output_value}"
-		return RenderModel(render_name="суммарный приведенный коэффициент теплопередачи для выбранных ограждений",
-		                   output_value=output_value,
-		                   output_render_value=output_render_value,
-		                   key="structure_heat_resistence_total_coefficient_local")
-
-	def get_total_structure_area(self) -> RenderModel:
-		"""сумма наружных поврехностей ограждения"""
-		output_value = sum([structure.area for structure in self.structures_list])
-		join_list = (str(round(structure.area, 1)) for structure in self.structures_list)
-		output_render_value = f"{'+'.join(join_list)} ={output_value}"
-		return RenderModel(render_name="сумма наружных поврехностей ограждения",
-		                   output_value=output_value,
-		                   output_render_value=output_render_value,
-		                   key="total_structure_area")

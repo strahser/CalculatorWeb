@@ -25,7 +25,7 @@ class Building:
 			room.t_in_building = self.building_temperature
 			room.t_ot_middle = self.climate_data.t_ot_middle
 			room.update_room_temperature_coefficient()
-			for structure in room.structures.structures_list:
+			for structure in room.structures_list:
 				structure.gsop = self.climate_data.GSOP
 				self.all_structures.append(structure)
 
@@ -56,9 +56,9 @@ class Building:
 	def get_building_structure_heat_resistence_total_coefficient_local(self) -> RenderModelList:
 		"""Удельная теплозащитная характеристика здания"""
 		output_value = sum(
-			[room.structures.get_structure_heat_resistence_total_coefficient_local().output_value
+			[room.get_structure_heat_resistence_total_coefficient_local().output_value
 			 for room in self.rooms]) / self.heated_volume
-		output_render_value = [room.structures.get_structure_heat_resistence_total_coefficient_local() for room in
+		output_render_value = [room.get_structure_heat_resistence_total_coefficient_local() for room in
 		                       self.rooms]
 		return RenderModelList(render_name="Удельная теплозащитная характеристика здания",
 		                       output_value=output_value,

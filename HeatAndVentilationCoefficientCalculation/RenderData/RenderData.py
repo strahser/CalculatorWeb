@@ -3,7 +3,7 @@ from HeatAndVentilationCoefficientCalculation.AreasData.Building import Building
 from HeatAndVentilationCoefficientCalculation.HeatCalculation.SunRadiationHeat import SunRadiationData
 
 
-def render_data(building: Building):
+def render_data(building: Building) -> dict:
 	filter_columns = ['name', '_n_temperature_coefficient', 'area', 'R_real', 'a_r_n', 'percent_a_r_n']
 	df = pd.DataFrame(building.all_structures)
 	df['a_r_n'] = df['_n_temperature_coefficient'] * df['area'] / df['R_real']
@@ -30,4 +30,11 @@ def render_data(building: Building):
 		get_building_local_heating_and_ventilation_coefficient(SunRadiationData),
 		df=df, df_group=df_group
 	)
-	return {k: round(v, 2) for k, v in short_context.items()}
+	temp_dict = {}
+	for k, v in short_context.items():
+		try:
+			temp_dict[k] = round(v, 2)
+		except:
+			temp_dict[k] = v
+
+	return temp_dict
