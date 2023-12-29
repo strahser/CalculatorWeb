@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from HeatAndVentilationCoefficientCalculation.AreasData.Room import Room
-from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import Structure
-from HeatAndVentilationCoefficientCalculation.StaticData.CheckConditions import CheckConditions
+from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import StructureBase
+from HeatAndVentilationCoefficientCalculation.StaticData import CheckConditions
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientAdditionHeat import \
 	StaticCoefficientAdditionHeat
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientHeatTransmission import \
@@ -12,19 +12,19 @@ from Utils.RenderModel import RenderModel, RenderModelList
 
 @dataclass()
 class Building:
+	building_name:str
 	climate_data: ClimateData
 	building_temperature: float
 	heated_volume: float
 	level_number: int
 	level_height: float
 	rooms: [Room]
-	all_structures: [Structure] = field(default_factory=list)
+	all_structures: [StructureBase] = field(default_factory=list)
 
 	def __post_init__(self) -> None:
 		for room in self.rooms:
-			room.t_in_building = self.building_temperature
-			room.t_ot_middle = self.climate_data.t_ot_middle
-			room.update_room_temperature_coefficient()
+			room.update_room_temperature_coefficient(t_ot_middle=self.climate_data.t_ot_middle,
+			                                         t_in_building=self.building_temperature)
 			for structure in room.structures_list:
 				structure.gsop = self.climate_data.GSOP
 				self.all_structures.append(structure)
@@ -105,5 +105,5 @@ class Building:
 		z = StaticCoefficientHeatTransmission.z_0_95
 		q_addition_heat = v * z * (k_domestic + k_radiation)
 		q_heat = (k_structure.output_value + k_vent - q_addition_heat) * (
-					1 - 0.1) * StaticCoefficientAdditionHeat.b_h_1_1_3
+				1 - 0.1) * StaticCoefficientAdditionHeat.b_h_1_1_3
 		return q_heat

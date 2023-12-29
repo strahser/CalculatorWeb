@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 
 @dataclass()
 class ClimateData:
+	city_name: str
 	t_ot_middle: float  # Средняя температура наружного воздуха за отопительный период	textav , °С
 	t_out_max: float  # Расчетная температура наружного воздуха	  text , °С		-26
 	z_ot: float  # Продолжительность отопительного периода	zht , cут.

@@ -7,7 +7,7 @@ class StaticCoefficientStructures:
 	                                   }
 
 	@staticmethod
-	def temperature_coefficient_n_calculated(t_ot_building: float, t_in_building: float, t_in_room: float) -> float:
+	def temperature_coefficient_n_calculated(t_ot_middle: float, t_in_building: float, t_in_room: float) -> float:
 		"""
 		переводной коэффициент при расчете ограждающих конструкций в зависимости от температуры помещения и
 		температуры, по которой был расчитан ГСОП.
@@ -20,4 +20,4 @@ class StaticCoefficientStructures:
 			n_t = (t_in_room-t_ot)/(t_in_building-t_ot)
 			где, t_in_room,t_ot средняя температура внутреннего и наружного воздуха для данного помещения, °С;
 		"""
-		return round((t_in_room - t_ot_building) / (t_in_building - t_ot_building),2)
+		return round((t_in_room - t_ot_middle) / (t_in_building - t_ot_middle),2)

@@ -1,17 +1,16 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import numpy as np
-from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientStructures import StaticCoefficientStructures
+from HeatAndVentilationCoefficientCalculation.StaticData import StaticCoefficientStructures
 
 
 @dataclass()
-class Structure:
+class StructureBase:
 	name: str
 	area: float
 	R_real: float  # фактическиое термическое сопративление
-	R_norm: float = field(init=False)
-	gsop: float
+	R_norm: float = None
+	gsop: float = None
 	orientation: str = None
-	room_type: str = None
 	short_name: str = ""
 	label: str = ""
 	_n_temperature_coefficient: float = 1
@@ -41,15 +40,16 @@ class Structure:
 
 
 @dataclass()
-class Wall(Structure):
+class Wall(StructureBase):
 	label: str = "Стена"
 
 	def get_norm_terminal_resistence(self) -> None:
-		self.R_norm = 0.00035 * self.gsop + 1.4  # Стен, включая стены в грунте
+		if self.gsop:
+			self.R_norm = 0.00035 * self.gsop + 1.4  # Стен, включая стены в грунте
 
 
 @dataclass()
-class Door(Structure):
+class Door(StructureBase):
 	label: str = "Дверь"
 
 	def get_norm_terminal_resistence(self) -> None:
@@ -59,7 +59,7 @@ class Door(Structure):
 
 
 @dataclass()
-class Window(Structure):
+class Window(StructureBase):
 	label: str = "Окно"
 
 	def get_norm_terminal_resistence(self) -> None:
@@ -69,7 +69,7 @@ class Window(Structure):
 
 
 @dataclass()
-class Floor(Structure):
+class Floor(StructureBase):
 	# Покрытий и перекрытий над проездами
 	label: str = "Перекрытие"
 
@@ -79,7 +79,7 @@ class Floor(Structure):
 
 
 @dataclass()
-class Roof(Structure):
+class Roof(StructureBase):
 	# Перекрытий чердачных, над неотапливаемыми подпольями и подвалами
 	label: str = "Кровля"
 
@@ -89,7 +89,7 @@ class Roof(Structure):
 
 
 @dataclass()
-class Skylight(Structure):
+class Skylight(StructureBase):
 	# -Зенитных фонарей
 	label: str = "Зенитный фонарь"
 
