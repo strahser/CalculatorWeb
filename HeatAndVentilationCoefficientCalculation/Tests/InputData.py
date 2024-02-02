@@ -1,5 +1,5 @@
-from HeatAndVentilationCoefficientCalculation.AreasData.Building import Building
-from HeatAndVentilationCoefficientCalculation.AreasData.Room import Room
+from HeatAndVentilationCoefficientCalculation.SpaceData.Building import Building
+from HeatAndVentilationCoefficientCalculation.SpaceData.Room import Room
 from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import Wall, Roof, Floor, Window, \
 	Door
 from HeatAndVentilationCoefficientCalculation.StaticData.Category import Category
@@ -118,7 +118,7 @@ room4 = Room(floor_area_living=3500,
              room_heated_volume=3175,
              room_type="Техническое")
 building = Building(
-	building_name="TEST",
+	building_name="TEST1",
 	climate_data=climate_data,
 	heated_volume=34229,
 	level_number=20,
@@ -128,6 +128,7 @@ building = Building(
 
 )
 building2 = Building(
+	building_name="TEST2",
 	climate_data=climate_data,
 	heated_volume=34229,
 	level_number=20,

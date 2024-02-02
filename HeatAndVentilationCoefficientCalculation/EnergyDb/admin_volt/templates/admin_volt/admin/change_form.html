@@ -1,0 +1,212 @@
+{% extends "layouts/../layouts/base.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}">
+{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+            <div class="d-block mb-4 mb-md-0">
+                <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'admin:index' %}">
+                                <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                          <a href="{% url 'admin:app_list' opts.app_config.label %}">
+                            {{ opts.app_config.verbose_name }}
+                          </a>
+                        </li>
+
+                        {% if has_view_permission %}
+                            <li class="breadcrumb-item"><a
+                                    href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+                            </li>
+                        {% else %}
+                            <li class="breadcrumb-item">{{ opts.verbose_name_plural|capfirst }}</li>
+                        {% endif %}
+
+                        {% if add %}
+                            <li class="breadcrumb-item">{% blocktrans with name=opts.verbose_name %}Add
+                                {{ name }}{% endblocktrans %}</li>
+                        {% else %}
+                            <li class="breadcrumb-item">{{ original|truncatewords:"18" }}</li>
+                        {% endif %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    {% endblock %}
+{% endif %}
+
+{% block content %}
+    <div class="py-4 ms-4">
+        <div class="d-flex justify-content-between w-100 flex-wrap">
+            <div class="mb-3 mb-lg-0">
+                 <h1 class="h4">
+
+                     {% if add %}
+                        {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
+                     {% else %}
+                        {{ original|truncatewords:"18" }}
+                     {% endif %}
+                 </h1>
+            </div>
+            <div>
+                {% block object-tools %}
+
+                    {% if change %}{% if not is_popup %}
+                        {% block object-tools-items %}
+                            {% change_form_object_tools %}
+                        {% endblock %}
+                    {% endif %}{% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mx-3">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}"
+                          method="post" id="{{ opts.model_name }}_form" novalidate>
+
+                        {% csrf_token %}
+                        <div class="{{ direction.panel }}">{% block form_top %}{% endblock %}</div>
+
+                        <div>
+                            {% block field_sets %}
+                                {% for fieldset in adminform %}
+                                    {% if forloop.counter > 1 %}<hr>{% endif %}
+                                    {% include "admin/includes/fieldset.html" %}
+                                {% endfor %}
+
+                            {% endblock %}
+
+                            {% block after_field_sets %}{% endblock %}
+
+                            {% block inline_field_sets %}
+                                {% for inline_admin_formset in inline_admin_formsets %}
+                                    {% include inline_admin_formset.opts.template %}
+                                {% endfor %}
+
+                            {% endblock %}
+
+                            {% block after_related_objects %}{% endblock %}
+
+                            {% block submit_buttons_bottom %}
+                                {% submit_row %}{% endblock %}
+
+                            {% block admin_change_form_document_ready %}
+                                <script type="text/javascript"
+                                        id="django-admin-form-add-constants"
+                                        src="{% static 'admin/js/change_form.js' %}"
+                                        {% if adminform and add %}
+                                        data-model-name="{{ opts.model_name }}"
+                                        {% endif %}>
+                                </script>
+                            {% endblock %}
+                            {% prepopulated_fields_js %}
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Button trigger modal -->
+<p class="col-4 mr-3"></p>
+{% include "admin/includes/modal_bootstrap.html" %}
+{% endblock %}
+{% block extra_js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+$(document).ready(create_elements(), add_ajax(),add_ajax2())
+
+function create_elements() {
+    $('<button type="button" class="btn btn-primary" id="add-html-button" data-bs-toggle="modal" data-bs-target="#exampleModal"> Рассчитать терм.сопр. </button>')
+        .insertAfter('#id_R_real');
+    id_standard_structure_type =$('#id_standard_structure_type')
+    $('<div id="html_target" ></div>').insertAfter(id_standard_structure_type);
+    {#$('<button id="checkbox_data" class="btn btn-secondary" style="margin-left: 600px"> Обновить данные</button>').insertAfter($('#add_id_structure_layer'));#}
+}
+
+function add_ajax2(){
+     $("select").on('click', function (e){
+        {#e.preventDefault();#}
+        const wall_type = $('#id_standard_structure_type').val();
+        let all_layers = Array.from(document.getElementById('id_structure_layer_to').options).map(option => parseInt(option.value));
+        $.ajax({
+            url: "{% url 'check_thermal_resistence' %}",
+            data: {'structure_type': wall_type,'all_layers':all_layers,
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+            type: "GET",
+            dataType: 'html',
+            success: function (responce) {
+                if (responce) {
+                    let data_parse = JSON.parse(responce);
+                    $("#html_target").html(data_parse.df_);
+                console.log("{{ request.get_full_path }}")
+                }
+            },
+            error : function(response){
+        }
+        });
+    })
+    }
+
+
+function add_ajax(){
+     $("#add-html-button").on('click', function (e){
+        e.preventDefault();
+        const wall_type = $('#id_standard_structure_type').val();
+        let all_layers = Array.from(document.getElementById('id_structure_layer_to').options).map(option => parseInt(option.value));
+         $.ajax({
+            url: "{% url 'check_thermal_resistence' %}",
+            data: {'structure_type': wall_type,'all_layers':all_layers,
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+            type: "GET",
+            dataType: 'html',
+            success: function (responce) {
+                if (responce) {
+                    let data_parse = JSON.parse(responce);
+                    let data = data_parse.R_calc
+                    const data_render = `Расч.терм. сопр.= ${data}`;
+                    console.log(data_render);
+                    // Add the http response to element
+                     let htmlStr = `<p>Расчетное терм.сопр.: ${data}</p>
+                                    <p>Суммарная толщина,мм.: ${data_parse.sum_thickness}</p>
+                    <p>${data_parse.df_}</p>`
+        // Adding the data to the modal
+                    $('.modal-body').html(htmlStr);
+                    $("#save_modal").on('click', function (){
+                        $("#id_R_real").val(data);
+                        $("#id_thickness").val(data_parse.sum_thickness)
+                        $("#exampleModal").modal('toggle')
+                    });
+                console.log("{{ request.get_full_path }}")
+                }
+            },
+            error : function(response){
+        }
+        });
+    })
+    }
+    </script>
+    <script  src="{% static 'js/add_calculations.js' %}"></script>
+{% endblock extra_js %}

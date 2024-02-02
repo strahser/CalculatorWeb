@@ -15,6 +15,8 @@ class StructureTypeData(Enum):
 	Wall: str = StructureData("Стена", Wall)
 	Door: str = StructureData("Дверь", Door)
 	Window: str = StructureData("Окно", Window)
-	Skylight: str = StructureData("Зенитный фанарь", Skylight)
+	Skylight: str = StructureData("Зенитный фонарь", Skylight)
 	Floor: str = StructureData("Перекрытие", Floor)
 	Roof: str = StructureData("Кровля", Roof)
+	def get_R(self):
+		return {self.Wall.name:""}

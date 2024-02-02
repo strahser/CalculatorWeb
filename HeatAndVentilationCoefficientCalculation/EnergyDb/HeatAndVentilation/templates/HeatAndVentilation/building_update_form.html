@@ -1,0 +1,47 @@
+{% extends "layouts/../layouts/base.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load static %}
+
+
+{% block content %}
+    <div class="row">
+    <div class="col-6 mb-4">
+      <div class="card border-0 shadow components-section">
+        <div class="card-body">
+              <!-- Form -->
+                <form class="form-control" method="post">
+                    {% csrf_token %}
+                   <input type="hidden" name="__next__" value="{{ i__next__ }}">
+                    {{ form.as_p  }}
+    <button type="submit" class="btn btn-block btn-gray-800 mb-3" >Обновить</button>
+                    <a class="btn btn-block btn-gray-800 mb-3" href="{{ i__next__ }}"> Отмена </a>
+</form>
+              <!-- End of Form -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+const input = document.querySelectorAll('input');
+const label = document.querySelectorAll('label');
+const text_area = document.querySelectorAll('textarea');
+const select = document.querySelectorAll('select');
+
+for (const val of input) {
+  val.classList.add("form-control");
+}
+for (const val of select) {
+  val.classList.add("form-control");
+}
+for (const val of text_area) {
+  val.classList.add("form-control");
+}
+for (const val of label) {
+  val.classList.add("label-primary");
+}
+
+</script>
+{% endblock content %}

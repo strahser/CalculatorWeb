@@ -1,5 +1,5 @@
 import pandas as pd
-from HeatAndVentilationCoefficientCalculation.AreasData.Building import Building
+from HeatAndVentilationCoefficientCalculation.SpaceData.Building import Building
 from HeatAndVentilationCoefficientCalculation.HeatCalculation.SunRadiationHeat import SunRadiationData
 
 
@@ -36,5 +36,4 @@ def render_data(building: Building) -> dict:
 			temp_dict[k] = round(v, 2)
 		except:
 			temp_dict[k] = v
-
 	return temp_dict

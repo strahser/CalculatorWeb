@@ -1,0 +1,62 @@
+<!--
+
+=========================================================
+* Volt Free - Bootstrap 5 Dashboard
+=========================================================
+
+* Product Page: https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard
+* Copyright 2021 Themesberg (https://www.themesberg.com)
+* License (https://themesberg.com/licensing)
+
+* Designed and coded by https://themesberg.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Please contact us to request a removal.
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+  {% include 'includes/../includes/head.html' %}
+  {% block extrastyle %}{% endblock extrastyle %}
+  {% block extrahead %}{% endblock extrahead %}
+</head>
+
+  {% block nav %}
+    {% include 'includes/../includes/nav.html' %}
+  {% endblock nav %}
+
+  {% block sidebar %}
+    {% include 'includes/../includes/sidebar.html' %}
+  {% endblock sidebar %}
+
+  <main class="content">
+    {% block header %}
+      {% include 'includes/../includes/navigation.html' %}
+    {% endblock header %}
+          {% block messages %}
+          {% if messages %}
+            <ul class="alert alert-warning" role="alert">{% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+            {% endfor %}</ul>
+          {% endif %}
+        {% endblock messages %}
+
+    {% block content %}{% endblock content %}
+
+    {% block theme_settings %}
+      {% include 'includes/../includes/theme-settings.html' %}
+    {% endblock theme_settings %}
+
+    {% block footer %}
+      {% include 'includes/../includes/footer.html' %}
+    {% endblock footer %}
+
+  </main>
+
+  {% include 'includes/../includes/scripts.html' %}
+  {% block extra_js %}{% endblock extra_js %}
+<body>

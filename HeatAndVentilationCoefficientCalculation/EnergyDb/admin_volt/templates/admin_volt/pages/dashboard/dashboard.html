@@ -1,0 +1,36 @@
+{% extends 'layouts/../layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="col-6 mb-4 mt-4">
+      <div class="card border-1 shadow components-section">
+        <div class="card-body">
+            <div class="col-lg-6 col-sm-6">
+                <!-- Form -->
+                <div class="mb-4">
+                    <form action="{% url 'dashboard' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn btn-primary" type="submit">Подтвердить</button>
+                    </form>
+                </div>
+                 <!--End Form -->
+
+            </div>
+        </div>
+</div>
+    </div>
+{% if res %}
+        <div class="col-12 mb-4 mt-4">
+      <div class="card border-1 shadow components-section">
+        <div class="card-body">
+            <div class="col-lg-6 col-sm-12">
+
+            {{ res }}
+
+    </div>
+    </div>
+    </div>
+     </div>
+     {% endif %}
+{% endblock content %}

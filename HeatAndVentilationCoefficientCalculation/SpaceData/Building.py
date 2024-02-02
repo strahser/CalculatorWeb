@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from HeatAndVentilationCoefficientCalculation.AreasData.Room import Room
+from HeatAndVentilationCoefficientCalculation.SpaceData.Room import Room
 from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import StructureBase
-from HeatAndVentilationCoefficientCalculation.StaticData import CheckConditions
+from HeatAndVentilationCoefficientCalculation.StaticData.CheckConditions import CheckConditions
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientAdditionHeat import \
 	StaticCoefficientAdditionHeat
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientHeatTransmission import \
