@@ -1,9 +1,11 @@
-from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import StructureBase as d_Structure
-from HeatAndVentilationCoefficientCalculation.SpaceData.Room import Room as d_Room
-from HeatAndVentilationCoefficientCalculation.SpaceData.Building import Building as d_Building
-from IGSCalculator.Models.ClimateData import ClimateData as d_ClimateData
+from HeatAndVentilation.models.Building import Building
+from HeatAndVentilation.models.Structure import Structure
+from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresDataModel import StructureDataModel as d_Structure
+from HeatAndVentilationCoefficientCalculation.SpaceData.RoomDataModel import RoomDataModel as d_Room
+from HeatAndVentilationCoefficientCalculation.SpaceData.BuildingDataModel import BuildingDataModel as d_Building
+from HeatAndVentilationCoefficientCalculation.StaticData.StructureTypeData import StructureTypeData
+from HeatAndVentilationCoefficientCalculation.ProjectData.ClimateDataModel import ClimateDataModel as d_ClimateData
 import django.db.models
-from HeatAndVentilation.models import *
 
 
 def intersection_structures_list() -> list[str]:
@@ -15,8 +17,8 @@ def intersection_structures_list() -> list[str]:
 def create_room_structure_data_class(structures_list: [django.db.models.QuerySet]):
 	all_structures = []
 	for structure in structures_list:
-		structure_data_class = getattr(StructureTypeData, structure.structure_type).value.class_value(
-			structure.name, structure.area, structure.R_real
+		structure_data_class = getattr(StructureTypeData, structure.standard_structure_type).value.class_value(
+			structure.name, structure.area, structure.R_custom
 		)
 		all_structures.append(structure_data_class)
 	return all_structures

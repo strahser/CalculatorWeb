@@ -1,6 +1,7 @@
 from enum import Enum
 
 
-class Category(Enum):
+class RoomCategory(Enum):
 	living = "Жилое"
 	heating = "Отапливаемое"
+

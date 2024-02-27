@@ -6,13 +6,11 @@
             <div class="table-responsive">
                 <h5 class="card-title m-b-0">Static Table</h5>
             </div>
-            {{ table1|safe }}
-            <ul>
-                {% for data in object_list %}
-                    <p class="link-read-post"><a href="{% url 'building_update' data.id %}">{{ data.category }}</a></p>
-                {% endfor %}
 
-            </ul>
+                {{df|safe }}
+
+
+
         </div>
     </div>
   {% include 'includes/footer.html' %}

@@ -1,68 +1,71 @@
-from dataclasses import dataclass, field
-from HeatAndVentilationCoefficientCalculation.SpaceData.Room import Room
-from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import StructureBase
+from dataclasses import dataclass
+from typing import List
+
+from HeatAndVentilationCoefficientCalculation.SpaceData.RoomDataModel import RoomDataModel
+from HeatAndVentilationCoefficientCalculation.StaticData.BuildingCategory import BuildingCategory
 from HeatAndVentilationCoefficientCalculation.StaticData.CheckConditions import CheckConditions
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientAdditionHeat import \
 	StaticCoefficientAdditionHeat
 from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientHeatTransmission import \
 	StaticCoefficientHeatTransmission
-from IGSCalculator.Models.ClimateData import ClimateData
+from HeatAndVentilationCoefficientCalculation.ProjectData.ClimateDataModel import ClimateDataModel
 from Utils.RenderModel import RenderModel, RenderModelList
 
 
 @dataclass()
-class Building:
-	building_name:str
-	climate_data: ClimateData
-	building_temperature: float
+class BuildingDataModel:
+	name: str
+	category: str
 	heated_volume: float
 	level_number: int
 	level_height: float
-	rooms: [Room]
-	all_structures: [StructureBase] = field(default_factory=list)
-
-	def __post_init__(self) -> None:
-		for room in self.rooms:
-			room.update_room_temperature_coefficient(t_ot_middle=self.climate_data.t_ot_middle,
-			                                         t_in_building=self.building_temperature)
-			for structure in room.structures_list:
-				structure.gsop = self.climate_data.GSOP
-				self.all_structures.append(structure)
+	building_temperature: float
+	climate_data: ClimateDataModel
+	rooms: List[RoomDataModel]
 
 	def get_building_total_structure_area(self) -> RenderModelList:
 		"""общая площадь наружных конструкций здания"""
-		output_value = sum([room.structures.get_total_structure_area().output_value for room in self.rooms])
-		output_render_value = [room.structures.get_total_structure_area() for room in self.rooms]
+		total_structure_area = sum([room.get_total_structure_area().output_value for room in self.rooms])
 		return RenderModelList(render_name="сумма наружных поврехностей ограждения здания",
-		                       output_value=output_value,
-		                       output_render_list=output_render_value,
-		                       key="building_total_structure_area")
+		                       output_value=total_structure_area,
+		                       output_render_list=total_structure_area,
+		                       key=self.get_building_total_structure_area.__name__)
 
-	def get_building_structure_heat_resistence_total_coefficient(self) -> float:
+	def update_room_coefficient(self) -> None:
+		for room in self.rooms:
+			room.update_structure_coefficient(self.climate_data.t_ot_middle, self.building_temperature)
+
+	def get_building_structure_heat_resistence_total_coefficient(self) -> RenderModelList:
 		"""общий коэффициент теплопередачи здания"""
-		return sum(
-			[room.structures.get_structure_heat_resistence_total_coefficient().output_value for room in self.rooms])
+		_total_coefficient = sum(
+			[room.get_structure_heat_resistence_total_coefficient(
+				self.climate_data.t_ot_middle, self.building_temperature
+			).output_value for room in self.rooms]
+		)
+		return RenderModelList(render_name="общий коэффициент теплопередачи здания",
+		                       output_value=_total_coefficient,
+		                       output_render_list=_total_coefficient,
+		                       key=self.get_building_structure_heat_resistence_total_coefficient.__name__)
 
-	def get_normativ_building_structure_heat_resistence_total_coefficient(self) -> RenderModel:
+	def get_normative_building_structure_heat_resistence_total_coefficient(self) -> RenderModel:
 		"""общий коэффициент теплопередачи здания"""
 		return CheckConditions.k_total_norm(self.climate_data.GSOP, self.heated_volume)
 
 	def get_building_compact_coefficient(self) -> float:
 		"""коэффициент компактности здания"""
 		k_comp = self.get_building_total_structure_area().output_value / self.heated_volume
-		check_compact = CheckConditions.check_k_comp_value(k_comp, self.level_number)
+		check_compact = CheckConditions.check_k_comp_value(k_comp, self.level_number)  # todo add info to frontend
 		return k_comp
 
 	def get_building_structure_heat_resistence_total_coefficient_local(self) -> RenderModelList:
 		"""Удельная теплозащитная характеристика здания"""
-		output_value = sum(
-			[room.get_structure_heat_resistence_total_coefficient_local().output_value
-			 for room in self.rooms]) / self.heated_volume
-		output_render_value = [room.get_structure_heat_resistence_total_coefficient_local() for room in
-		                       self.rooms]
+		get_structure_coefficient_local = sum(
+			[room.get_structure_heat_resistence_total_coefficient_local(
+				self.climate_data.t_ot_middle, self.building_temperature).output_value
+			 for room in self.rooms])
 		return RenderModelList(render_name="Удельная теплозащитная характеристика здания",
-		                       output_value=output_value,
-		                       output_render_list=output_render_value,
+		                       output_value=get_structure_coefficient_local / self.heated_volume,
+		                       output_render_list=get_structure_coefficient_local / self.heated_volume,
 		                       key="building_structure_heat_resistence_total_coefficient_local")
 
 	def get_building_sun_radiation_coefficient(self, sun_radiation_data: dict[str, int]) -> float:

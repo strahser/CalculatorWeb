@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from HeatAndVentilationCoefficientCalculation.GeometryData.RoomInterfece import RoomI
 from HeatAndVentilationCoefficientCalculation.VentilationCalculation.RoomAirExchange import RoomVentilation
 from HeatAndVentilationCoefficientCalculation.VentilationCalculation.WindowInfiltration import WindowInfiltration
-from IGSCalculator.Models.ClimateData import ClimateData
+from HeatAndVentilationCoefficientCalculation.ProjectData.ClimateDataModel import ClimateDataModel
 from HeatAndVentilationCoefficientCalculation.VentilationCalculation.VentilationCalculationUtility import air_viscosity
 
 
@@ -17,7 +17,7 @@ class VentilationData:
 	а также помещений, предназначенных для размещения инженерного оборудования и сетей;
 	"""
 	room: RoomI
-	_climate_data: ClimateData
+	_climate_data: ClimateDataModel
 	_level_height: float
 	_level_number: int
 	_building_heated_volume: float

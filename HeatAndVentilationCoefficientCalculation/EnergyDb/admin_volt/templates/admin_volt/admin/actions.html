@@ -1,9 +1,11 @@
 {% load i18n static %}
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}">
+
 {% endblock %}
 
 <div class="actions form-group">
+
     {% block actions %}
         {% block actions-form %}
             {% for field in action_form %}

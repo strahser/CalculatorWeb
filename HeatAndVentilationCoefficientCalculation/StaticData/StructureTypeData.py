@@ -1,7 +1,4 @@
-
-
 from enum import Enum
-from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresData import *
 from dataclasses import dataclass
 
 
@@ -12,11 +9,10 @@ class StructureData:
 
 
 class StructureTypeData(Enum):
-	Wall: str = StructureData("Стена", Wall)
-	Door: str = StructureData("Дверь", Door)
-	Window: str = StructureData("Окно", Window)
-	Skylight: str = StructureData("Зенитный фонарь", Skylight)
-	Floor: str = StructureData("Перекрытие", Floor)
-	Roof: str = StructureData("Кровля", Roof)
-	def get_R(self):
-		return {self.Wall.name:""}
+	Wall: str = "Стена"
+	Door: str = "Дверь"
+	Window: str = "Окно"
+	Skylight: str = "Зенитный фонарь"# -Зенитных фонарей
+	Floor: str = "Перекрытие"# Покрытий и перекрытий над проездами
+	Roof: str = "Кровля"# Перекрытий чердачных, над неотапливаемыми подпольями и подвалами
+

@@ -10,9 +10,9 @@ parent_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(parent_dir)
 sys.path.insert(0, parent_dir)
 sys.path.insert(0, root_dir)
-from DetailCalculator.ClassEnergyCalculation import InputData,energy_class_calculation
+from ClassEnergyCalculation.Main import InputData,energy_class_calculation
 from docxtpl import DocxTemplate
-from DB.ExcelDBPath import ExcelDBPath
+from SpExcelDB.ExcelDBPath import ExcelDBPath
 
 
 def calculator_escadra_strelcovay(template_path,out_folder):
@@ -34,6 +34,6 @@ def calculator_escadra_strelcovay(template_path,out_folder):
         )
         calc = energy_class_calculation(input_data_, ExcelDBPath.order_399_table1)
         render_docx(doc, calc, out_folder, suffix=f"класс {key}")
-template_path = os.path.join(parent_dir,"DetailCalculator", "Энергоэфективность2.docx")
+template_path = os.path.join(parent_dir,"ClassEnergyCalculation", "Энергоэфективность2.docx")
 out_folder = os.path.join(root_dir, "Отчеты", "Расчет_эскадра_стрелковая")
 calculator_escadra_strelcovay(template_path, out_folder)

@@ -7,7 +7,7 @@
 <div class="filter_panel">
     <div class="mb-3">
         <span class="h6">{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</span>
-    </div>
+
     <ul>
         {% for choice in choices %}
             <li{% if choice.selected %} class="text-success selected"{% endif %}>
@@ -15,4 +15,6 @@
             </li>
         {% endfor %}
     </ul>
+    </div>
 </div>
+

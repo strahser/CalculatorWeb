@@ -4,7 +4,7 @@ from HeatAndVentilationCoefficientCalculation.StaticData.StaticCoefficientStruct
 from HeatAndVentilationCoefficientCalculation.StaticData.StructureTypeData import StructureTypeData
 
 
-def get_norm_terminal_resistence(gsop) -> dict[str, float]:
+def get_normative_thermal_resistence_coefficient(gsop) -> dict[str, float]:
 	return {
 		StructureTypeData.Wall.name: 0.00035 * gsop + 1.4,
 		StructureTypeData.Door.name: (0.00035 * gsop + 1.4)*0.55,
@@ -16,7 +16,6 @@ def get_norm_terminal_resistence(gsop) -> dict[str, float]:
 		StructureTypeData.Roof.name: 0.00045 * gsop + 1.9,
 		StructureTypeData.Skylight.name: 0.000025 * gsop + 0.25,
 	}
-
 
 
 

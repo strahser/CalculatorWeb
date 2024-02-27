@@ -37,7 +37,7 @@ class CheckConditions:
 			return RenderModel(render_name="Нормируемое значение удельной теплозащитной характеристики здания",
 			                   output_value=output_value,
 			                   output_render_value=output_render_value,
-			                   key="k_total_ge_960")
+			                   key=k_total_ge_960.__name__)
 
 		def k_total_le_960():
 			up = 4.74 / (0.00013 * gsop + 0.61)

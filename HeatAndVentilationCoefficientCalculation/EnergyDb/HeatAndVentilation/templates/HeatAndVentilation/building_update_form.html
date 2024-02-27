@@ -4,44 +4,36 @@
 
 
 {% block content %}
+   <div class="heading mb-4 mt-3" > {{ Name }}</div>
+
+    {{ display_layers_create_table|safe }}
     <div class="row">
     <div class="col-6 mb-4">
       <div class="card border-0 shadow components-section">
         <div class="card-body">
+            <div class="form-check form-check-inline">
               <!-- Form -->
-                <form class="form-control" method="post">
+                <form method="post">
                     {% csrf_token %}
                    <input type="hidden" name="__next__" value="{{ i__next__ }}">
                     {{ form.as_p  }}
-    <button type="submit" class="btn btn-block btn-gray-800 mb-3" >Обновить</button>
+    <button type="submit" class="btn btn-block btn-gray-800 mb-3" >Подтвердить</button>
                     <a class="btn btn-block btn-gray-800 mb-3" href="{{ i__next__ }}"> Отмена </a>
 </form>
               <!-- End of Form -->
-
+</div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-
-const input = document.querySelectorAll('input');
-const label = document.querySelectorAll('label');
-const text_area = document.querySelectorAll('textarea');
-const select = document.querySelectorAll('select');
-
-for (const val of input) {
-  val.classList.add("form-control");
+const widget_list =['input','textarea','select']
+for (const widget_name of widget_list) {
+    const selector = document.querySelectorAll(widget_name)
+    for (const val of selector) {
+        val.classList.add("form-control");
+    }
 }
-for (const val of select) {
-  val.classList.add("form-control");
-}
-for (const val of text_area) {
-  val.classList.add("form-control");
-}
-for (const val of label) {
-  val.classList.add("label-primary");
-}
-
 </script>
 {% endblock content %}

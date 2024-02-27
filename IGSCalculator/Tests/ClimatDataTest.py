@@ -10,7 +10,7 @@ parent_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(parent_dir)
 sys.path.insert(0, parent_dir)
 sys.path.insert(0, root_dir)
-from DB.ExcelDBPath import ExcelDBPath
+from SpExcelDB.ExcelDBPath import ExcelDBPath
 
 from Utils.Render import render_docx
 climate_df = pd.read_excel(ExcelDBPath.climate_data)

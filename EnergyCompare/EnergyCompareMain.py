@@ -11,7 +11,7 @@ root_dir = os.path.dirname(parent_dir)
 sys.path.insert(0, parent_dir)
 sys.path.insert(0, root_dir)
 from EnergyCompare.Control.EnergyCompareControl import energy_compare_control  # noqa: E402
-from DB.ExcelDBPath import ExcelDBPath
+from SpExcelDB.ExcelDBPath import ExcelDBPath
 from CSS import CssStyle
 
 

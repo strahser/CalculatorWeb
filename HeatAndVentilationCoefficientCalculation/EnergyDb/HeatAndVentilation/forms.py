@@ -1,6 +1,6 @@
 from django import forms
 
-from HeatAndVentilation.models import Room
+from HeatAndVentilation.models.Room import Room
 
 
 class BaseForm(forms.ModelForm):

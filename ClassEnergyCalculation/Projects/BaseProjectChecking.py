@@ -9,9 +9,9 @@ parent_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(parent_dir)
 sys.path.insert(0, parent_dir)
 sys.path.insert(0, root_dir)
-from DetailCalculator.ClassEnergyCalculation import InputData, energy_class_calculation
+from ClassEnergyCalculation.Main import InputData, energy_class_calculation
 from docxtpl import DocxTemplate
-from DB.ExcelDBPath import ExcelDBPath
+from SpExcelDB.ExcelDBPath import ExcelDBPath
 
 
 def main(input_data_: InputData, template_path, out_folder, need_render_docx: bool = False):
@@ -61,6 +61,6 @@ input_data2 = InputData(
 # endregion
 
 
-template_path = os.path.join(parent_dir, "DetailCalculator", "HeatTemplate.docx")
+template_path = os.path.join(parent_dir, "ClassEnergyCalculation", "HeatTemplate.docx")
 out_folder = os.path.join(current_dir, "reports", "base_project_calc")
 main(input_data2, template_path, out_folder,True)

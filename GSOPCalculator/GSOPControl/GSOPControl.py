@@ -10,8 +10,8 @@ sys.path.insert(0, root_dir)
 from GSOPCalculator.GSOPProcess.CreateGSOPData import CalculateGSOP
 from GSOPCalculator.GSOPView.CalculateGSOPView import CalculateGSOPView
 from EnergyCompare.Utility.PandasFunctions import load_input_data_frame
-from DB.SqlConnector import DB_TABLE,SqlConnector
-from DB.ExcelDBPath import ExcelDBPath
+from SpExcelDB.SqlConnector import DB_TABLE,SqlConnector
+from SpExcelDB.ExcelDBPath import ExcelDBPath
 
 class GSOPControl:
 	def __init__(self):
