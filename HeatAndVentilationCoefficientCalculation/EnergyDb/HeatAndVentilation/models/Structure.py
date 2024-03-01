@@ -17,6 +17,7 @@ class Structure(models.Model):
                                         verbose_name="Базовая конструкция",
                                         on_delete=models.CASCADE,
                                         related_name='base_structure')
+
     orientation = models.CharField(
         max_length=3, blank=False, null=False, choices=[(val.name, val.value) for val in OrientationData],
         verbose_name="ориентация", default=OrientationData.ND.name
@@ -31,6 +32,7 @@ class Structure(models.Model):
     class Meta:
         verbose_name = "Ограждающая конструкция"
         verbose_name_plural = "Ограждающие конструкции"
+        ordering = ['base_structures__name']
 
     def __str__(self):
         return f"--{self.name}--{self.short_name}--"

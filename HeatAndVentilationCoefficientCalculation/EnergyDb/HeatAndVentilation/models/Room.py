@@ -4,7 +4,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 import pandas as pd
 from HeatAndVentilation.models.Structure import Structure
-from HeatAndVentilationCoefficientCalculation.EnergyDb.Utils.TableRender import render_modal_window, button_link
+from HeatAndVentilationCoefficientCalculation.EnergyDb.Utils.TableRender import render_modal_window, button_link, \
+    create_crud_buttons, create_table_from_model, df_html, ButtonData
 from HeatAndVentilationCoefficientCalculation.StaticData.RoomCategory import RoomCategory
 
 
@@ -49,22 +50,21 @@ class Room(models.Model):
 
     @property
     def display_room_structures(self):
+        qs = self.structures_list
+        group_buttons_data = [
+            ButtonData('HeatAndVentilation:StructureCopyView', 'pk', 'success', 'скопировать'),
+            ButtonData('HeatAndVentilation:StructureUpdateView', 'pk', 'info', 'обновить'),
+            ButtonData('HeatAndVentilation:StructureDeleteView', 'pk', 'danger', 'удалить'),
+        ]
         try:
-            qs = self.structures_list
-            url_list = [reverse('HeatAndVentilation:StructureUpdateView', kwargs={'pk': val.pk}) for val in qs]
+            df = create_table_from_model(Structure, qs, filter_columns=['name','short_name', 'area'])
+            df['url'] = create_crud_buttons(qs, group_buttons_data)
 
-            data = {"Наименование": [val.name for val in qs],
-                    "сокр.наим": [val.short_name for val in qs],
-                    "площадь": [val.area for val in qs],
-                    "Конструкции": [button_link(my_url, cls='danger') for my_url in url_list],
-                    }
-            modal_body = pd.DataFrame(data).to_html(index=True, classes="table table-striped table-bordered ", border=1,
-                                                    escape=False)
-            res = render_modal_window(pk=self.pk, title=self.name, modal_body=modal_body)
+            res = render_modal_window(pk=self.pk, title=self.name, modal_body=df_html(df))
             return mark_safe(res)
 
         except Exception as e:
             print("Конструкции помещения ошибка", e)
-            return "--"
+            return " "
 
     display_room_structures.fget.short_description = 'Конструкции помещения'

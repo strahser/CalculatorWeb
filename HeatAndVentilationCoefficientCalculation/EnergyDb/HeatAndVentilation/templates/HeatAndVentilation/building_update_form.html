@@ -17,6 +17,7 @@
                     {% csrf_token %}
                    <input type="hidden" name="__next__" value="{{ i__next__ }}">
                     {{ form.as_p  }}
+                    {{ form.media }}
     <button type="submit" class="btn btn-block btn-gray-800 mb-3" >Подтвердить</button>
                     <a class="btn btn-block btn-gray-800 mb-3" href="{{ i__next__ }}"> Отмена </a>
 </form>
@@ -32,8 +33,33 @@ const widget_list =['input','textarea','select']
 for (const widget_name of widget_list) {
     const selector = document.querySelectorAll(widget_name)
     for (const val of selector) {
-        val.classList.add("form-control");
+        if (val.type==='checkbox'){
+                   val.classList.add("form-check-input");
+        }
+        else {
+            val.classList.add("form-control");
+        }
     }
 }
+    document.getElementById('category').addEventListener('change', function () {
+        var category_id = this.value;
+        $.ajax({
+            type: 'GET',
+            url: '/get-course/',
+            data: { 'category': category_id },
+            dataType: 'json',
+            success: function (data) {
+                var courseSelect = document.getElementById('course');
+                courseSelect.innerHTML = '';
+
+                data.forEach(function (course) {
+                    var option = document.createElement('option');
+                    option.value = course.id;
+                    option.text = course.name;
+                    courseSelect.add(option);
+                });
+            }
+        });
+    });
 </script>
 {% endblock content %}

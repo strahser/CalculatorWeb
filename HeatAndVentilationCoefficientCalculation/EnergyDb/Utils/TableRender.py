@@ -1,84 +1,86 @@
+from typing import List
 import pandas as pd
 from django.urls import reverse
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django_pandas.io import read_frame
 from django.db import models
+from HeatAndVentilationCoefficientCalculation.EnergyDb.Utils.AdminUtils import get_standard_display_list
+from dataclasses import dataclass, asdict
 from django.template.loader import render_to_string
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+
+#region buttons Data
+@dataclass
+class ButtonData:
+	url: str
+	pk_name: str = 'pk'
+	cls: str = 'info'
+	name: str = 'изменить'
+
+	def dict(self):
+		return {k: str(v) for k, v in asdict(self).items()}
 
 
 def button_link(url: str, name: str = "изменить", cls='info'):
-    return f'<a href="{url}"class="btn btn-{cls} mr-5"   role="button">{name}</a>'
+	return f'<a href="{url}"class="btn btn-{cls} mr-5"   role="button">{name}</a>'
 
 
-def df_html(df: pd.DataFrame, table_id="zero_config") -> str:
-    """Обертка со стилями для экспорта дата фрейм в html"""
-    return df.to_html(index=False, classes="table table-striped table-bordered ", border=1, render_links=True,
-                      justify='center', escape=False, table_id=table_id)
+def create_reverse_button(pk, button_data: ButtonData):
+	url = reverse(button_data.url, kwargs={button_data.pk_name: pk})
+	res = button_link(url, cls=button_data.cls, name=button_data.name)
+	if res:
+		return res
+	else:
+		return ""
+
+
+def create_group_button(buttons: str) -> str:
+	return '<div class="btn-group " role="group" aria-label="Basic example">' + buttons + '</div>'
+
+
+def create_crud_buttons(qs, group_buttons_data: list[ButtonData]) -> list[str]:
+	create_button = []
+	for qs_data in qs:
+		join_list = []
+		for button_data in group_buttons_data:
+			button = create_reverse_button(qs_data.id, button_data)
+			join_list.append(button)
+		create_button.append(create_group_button(''.join(join_list)))
+	return create_button
+
+#endregion DD
+def df_html(df: pd.DataFrame, table_id="zero_config", index=False) -> str:
+	"""Обертка со стилями для экспорта дата фрейм в html"""
+	return df.to_html(index=index, classes="table table-striped table-bordered ", border=1, render_links=True,
+	                  justify='center', escape=False, table_id=table_id)
 
 
 def renamed_dict(model_type: models.Model) -> dict[str, str]:
-    """переименовываем столбцы модели django согласно заданному verbose name """
-    names = [f.name for f in model_type._meta.get_fields()]
-    res_dict = {}
-    for val in names:
-        try:
-            res_dict[val] = model_type._meta.get_field(val).verbose_name
-        except:
-            pass
-    return res_dict
+	"""переименовываем столбцы модели django согласно заданному verbose name """
+	names = get_standard_display_list(model_type)
+	res_dict = {}
+	for val in names:
+		try:
+			res_dict[val] = model_type._meta.get_field(val).verbose_name
+		except:
+			pass
+	return res_dict
 
 
-def create_table_from_model(model_name: models.Model, qs=None, table_id="zero_config") -> str:
-    """создаем таблицу на основе модели django (выбираем все записи если qs не задан) через библиотеку
+def create_table_from_model(model_name: models.Model, qs, filter_columns: list[str] = None) -> pd.DataFrame:
+	"""создаем таблицу на основе модели django (выбираем все записи если qs не задан) через библиотеку
     django_pandas read_frame добавляем столбец с пустой ссылкой на id модели
     задаем id для data table рендера
     """
-    qs = qs if qs else model_name.objects.all()
-    res_dict = renamed_dict(model_name)
-    table1 = (
-        read_frame(qs, datetime_index=False)
-        .rename(res_dict, axis="columns")
-    )
-    id_data = table1['ID']
-    table1["button"] = f"<a href=''>{id_data}</a>"
-    return df_html(table1)
-
-
-def create_fields_list_for_render(model_name: models.Model, qs=None):
-    fields_ = [f.name for f in model_name._meta.get_fields()]
-    data = []
-    for value in qs:
-        temp_list = []
-        for fild in fields_:
-            temp = getattr(value, fild)
-            temp_list.append(temp)
-        data.append(temp_list)
-    names = renamed_dict(model_name).values()
-    return dict(data=data, names=names)
+	res_dict = renamed_dict(model_name)
+	df = read_frame(qs, verbose=True, datetime_index=False)
+	if filter_columns:
+		return df.filter(filter_columns).rename(res_dict, axis="columns")
+	else:
+		return df.rename(res_dict, axis="columns")
 
 
 def render_modal_window(pk: int, title: str, modal_body: str, button_name='Детали'):
-    context = dict(pk=pk, title=title, modal_body=modal_body, button_name=button_name)
-    return f"""
-    	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{pk}">
-        {button_name}
-	</button>
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal{pk}" tabindex="-1" aria-labelledby="exampleModal{pk}" aria-hidden="true">
-	  <div class="modal-dialog modal-xl">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLabel"> {title} </h5>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	      </div>
-	      <div class="modal-body">
-	          {modal_body}
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close">Close</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-    """
+	"""созадаем модльное окно которое можем вызывать из таблицы"""
+	context = dict(pk=pk, title=title, modal_body=modal_body, button_name=button_name)
+	return render_to_string(template_name='HtmlTemplates/modal.html', context=context)
