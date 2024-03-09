@@ -27,13 +27,12 @@ class RoomDataModel(RoomI):
 		"""
 		self.floor_area_heated = self.floor_area_living if self.floor_area_heated == 0 else self.floor_area_heated
 		self.floor_area_living = self.floor_area_heated if self.floor_area_living == 0 else self.floor_area_living
-		self.windows = [val for val in self.structures_list if val.standard_structure_type == StructureTypeData.Window.name]
+		self.windows = [val for val in self.structures_list if
+		                val.standard_structure_type == StructureTypeData.Window.name]
 		self.doors = [val for val in self.structures_list if val.standard_structure_type == StructureTypeData.Door.name]
 		self._window_area = 0
 		self._door_area = 0
-		self.n_temperature_coefficient =0
-
-
+		self.n_temperature_coefficient = 0
 
 	@property
 	def window_area(self):

@@ -5,7 +5,6 @@ import pandas as pd
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from typing import Iterable
-
 from django_pandas.io import read_frame
 
 from HeatAndVentilation.models.Structure import Structure
@@ -27,8 +26,8 @@ class BaseStructure(models.Model):
 
     """
 	name = models.TextField(max_length=90, verbose_name="наименование")
-	R_custom = models.FloatField(verbose_name="Введенное.терм. сопр.", null=False, blank=False, default=1,
-	                             help_text="принимается в расчетах если не заданы слои конструкций")
+	R_real = models.FloatField(verbose_name="Введенное.терм. сопр.", null=False, blank=False, default=1,
+	                           help_text="принимается в расчетах если не заданы слои конструкций")
 	standard_structure_type = models.CharField(max_length=60,
 	                                           choices=[(val.name, val.value) for val in StructureTypeData],
 	                                           blank=False,
@@ -61,10 +60,6 @@ class BaseStructure(models.Model):
 			return R_tr_val
 
 	@property
-	def R_real(self):
-		return self.R_calculated if self.R_calculated else self.R_custom
-
-	@property
 	def R_norm(self):
 		qs1 = BaseStructure.objects.filter(pk=self.pk).prefetch_related(
 			'buildings_list').first().buildings_list.all()
@@ -90,7 +85,7 @@ class BaseStructure(models.Model):
 
 	@staticmethod
 	def render_gsop_table(building_qs: Iterable, standard_structure_type: str, layers_qs: Iterable = None):
-		gsop_list = [val.get_gsop for val in building_qs]
+		gsop_list = [val.GSOP for val in building_qs]
 		R_norm = [get_normative_thermal_resistence_coefficient(gsop).get(standard_structure_type) for gsop in gsop_list]
 		data = {"Здание": [val.name for val in building_qs],
 		        "Город": [val.climate_data.name for val in building_qs],
@@ -104,7 +99,7 @@ class BaseStructure(models.Model):
 	@staticmethod
 	def display_layers_create_table(layers_qs: models.query) -> str:
 		if layers_qs:
-			df = create_table_from_model(StructureLayer, layers_qs,filter_columns=['name', 'thickness_layer'])
+			df = create_table_from_model(StructureLayer, layers_qs, filter_columns=['name', 'thickness_layer'])
 			group_buttons_data = [
 				ButtonData('HeatAndVentilation:StructureLayerCopyView', 'pk', 'success', 'скопировать'),
 				ButtonData('HeatAndVentilation:StructureLayerUpdateView', 'pk', 'info', 'обновить'),

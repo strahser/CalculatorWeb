@@ -132,7 +132,5 @@
 <!-- Button trigger modal -->
 <p class="col-4 mr-3"></p>
 {% include "admin/includes/modal_bootstrap.html" %}
+    <p class="heading mb-4 mt-3"  id="js-products" data-url="{% url 'HeatAndVentilation:filter_base_structure' %}"></p>
 {% endblock %}
-{% block extra_js %}
-{#<script src="{% static 'assets/js/add_ajax.js' %}"></script>#}
-{% endblock extra_js %}

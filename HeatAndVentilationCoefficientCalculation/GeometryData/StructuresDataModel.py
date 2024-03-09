@@ -1,9 +1,7 @@
 from dataclasses import dataclass, field
-
 from HeatAndVentilationCoefficientCalculation.GeometryData.BaseStructureDataModel import BaseStructureDataModel
 from HeatAndVentilationCoefficientCalculation.HeatCalculation.StructureThermalResistenceCoefficient import \
 	get_normative_thermal_resistence_coefficient
-from HeatAndVentilationCoefficientCalculation.StaticData.StructureTypeData import StructureTypeData
 
 
 @dataclass()

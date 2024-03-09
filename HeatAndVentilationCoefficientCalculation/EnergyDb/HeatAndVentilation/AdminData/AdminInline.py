@@ -17,7 +17,8 @@ class EditLinkToInlineObject(object):
 			instance._meta.model_name),
 		              args=[instance.pk])
 		if instance.pk:
-			return mark_safe(f'<div style="width:100%%; height:100%%; color:red; font-size:16px; font-weight:bolder;"><a href="{url}">ссылка на конструкции</a></div>')
+			return mark_safe(
+				f'<div style="width:100%%; height:100%%; color:red; font-size:16px; font-weight:bolder;"><a href="{url}">ссылка на конструкции</a></div>')
 		else:
 			return ''
 
@@ -32,6 +33,18 @@ class ClimateInline(admin.TabularInline):
 class StructureInlineTabular(admin.TabularInline):
 	model = Structure
 	extra = 0
+	can_delete = True
+	show_change_link = True
+	readonly_fields = ('check_property',)
+
+	def check_property(self, instance):
+		if instance.pk:
+			if instance.R_real < instance.R_Norm:
+				return mark_safe(f'<div style="width:100%%; height:100%%; color:red; font-size:16px; '
+				                 f'font-weight:bolder;">факт.сопрот. {instance.R_real} <br> норм.сопрот.{instance.R_Norm}</div>')
+			else:
+				return mark_safe(
+					f'<div style="width:100%%; height:100%%;">факт.сопрот. {instance.R_real} <br> норм.сопрот.{instance.R_Norm}</div>')
 
 
 class StructureInline(NestedStackedInline):
@@ -46,8 +59,8 @@ class RoomInline(EditLinkToInlineObject, admin.TabularInline):
 	can_delete = True
 	show_change_link = True
 	readonly_fields = ('edit_link',)
-# fk_name = 'building'
-# inlines = [StructureInline]
+	fk_name = 'building'
+	inlines = [StructureInline]
 
 
 class StructureTypeInline(admin.TabularInline):

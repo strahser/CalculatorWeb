@@ -1,4 +1,3 @@
-
 from HeatAndVentilationCoefficientCalculation.GeometryData.BaseStructureDataModel import BaseStructureDataModel
 from HeatAndVentilationCoefficientCalculation.GeometryData.StructuresDataModel import StructureDataModel
 from HeatAndVentilationCoefficientCalculation.SpaceData.BuildingDataModel import BuildingDataModel
@@ -17,7 +16,6 @@ climate_data = ClimateDataModel(
 	air_velocity_max=3.8,
 	air_velocity_middle=3.8,
 	z_ot=216,
-	t_in=20
 )
 
 # region Базовые конструкции
@@ -94,9 +92,6 @@ structures1 = [
 	                   ),
 ]
 
-
-
-
 room1 = RoomDataModel(name="Помещение1",
                       human_number=332,
                       structures_list=structures1,
@@ -126,71 +121,70 @@ ventilation_data = VentilationData(
 	_building_heated_volume=building.heated_volume,
 )
 
-
 # structures2 = [
 # 	StructureDataModel(name="Навесная фасадная система с основанием из керамзитобетона",
-# 	                   short_name="ст1", area=503, R_real=3.16, standard_structure_type=StructureTypeData.Wall.name
+# 	                   short_name="ст1", area=503, r_real=3.16, standard_structure_type=StructureTypeData.Wall.name
 # 	                   ),
 # 	StructureDataModel(name="Навесная фасадная система с основанием из железобетона",
-# 	                   short_name="ст2", area=336, R_real=3.34, standard_structure_type=StructureTypeData.Wall.name
+# 	                   short_name="ст2", area=336, r_real=3.34, standard_structure_type=StructureTypeData.Wall.name
 # 	                   ),
 # 	StructureDataModel(name="Трехслойная стена по кладке из керамзитобетона",
-# 	                   short_name="ст3", area=55, R_real=3.19, standard_structure_type=StructureTypeData.Wall.name
+# 	                   short_name="ст3", area=55, r_real=3.19, standard_structure_type=StructureTypeData.Wall.name
 # 	                   ),
 # 	StructureDataModel(name="Трехслойная стена по монолитному железобетону",
-# 	                   short_name="ст3", area=130, R_real=3.42, standard_structure_type=StructureTypeData.Wall.name
+# 	                   short_name="ст3", area=130, r_real=3.42, standard_structure_type=StructureTypeData.Wall.name
 # 	                   ),
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок", area=430, R_real=0.65, orientation=OrientationData.N.name,
+# 	                   short_name="ок", area=430, r_real=0.65, orientation=OrientationData.N.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 # ]
 #
 # structures3 = [
 # 	StructureDataModel(name="Перекрытие над подвалом",
-# 	                   short_name="цок1", area=1550, R_real=1.88,
+# 	                   short_name="цок1", area=1550, r_real=1.88,
 # 	                   standard_structure_type=StructureTypeData.Wall.name
 # 	                   ),
 # ]
 #
 # structures4 = [
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=142, R_real=0.65, orientation=OrientationData.N.name,
+# 	                   short_name="ок4", area=142, r_real=0.65, orientation=OrientationData.N.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=366, R_real=0.65, orientation=OrientationData.NE.name,
+# 	                   short_name="ок4", area=366, r_real=0.65, orientation=OrientationData.NE.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=103, R_real=0.65, orientation=OrientationData.E.name,
+# 	                   short_name="ок4", area=103, r_real=0.65, orientation=OrientationData.E.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=286, R_real=0.65, orientation=OrientationData.SE.name,
+# 	                   short_name="ок4", area=286, r_real=0.65, orientation=OrientationData.SE.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=67, R_real=0.65, orientation=OrientationData.S.name,
+# 	                   short_name="ок4", area=67, r_real=0.65, orientation=OrientationData.S.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=477, R_real=0.65, orientation=OrientationData.SW.name,
+# 	                   short_name="ок4", area=477, r_real=0.65, orientation=OrientationData.SW.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=49, R_real=0.65, orientation=OrientationData.W.name,
+# 	                   short_name="ок4", area=49, r_real=0.65, orientation=OrientationData.W.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #
 # 	StructureDataModel(name=base_window_0_65.name,
-# 	                   short_name="ок4", area=323, R_real=0.65, orientation=OrientationData.NW.name,
+# 	                   short_name="ок4", area=323, r_real=0.65, orientation=OrientationData.NW.name,
 # 	                   standard_structure_type=StructureTypeData.Window.name
 # 	                   ),
 #

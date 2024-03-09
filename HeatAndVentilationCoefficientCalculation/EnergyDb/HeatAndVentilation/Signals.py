@@ -9,7 +9,7 @@ from HeatAndVentilation.models.StructureLayer import StructureLayer
 @receiver(post_save, sender="HeatAndVentilation.BaseStructure")
 def change_R_real(instance, **kwargs):
 	qs = Structure.objects.filter(base_structures__id=instance.id).all()
-	qs.update(R_real=instance.R_custom, standard_structure_type=instance.standard_structure_type)
+	qs.update(R_real=instance.R_real, standard_structure_type=instance.standard_structure_type)
 
 
 # Connect the signal to the signal handler
@@ -22,7 +22,7 @@ def change_R_real_by_layers(instance, **kwargs):
 	r_calc = round(
 		1 / 23 + sum([val.thickness_layer * 0.001 / val.lambda_structure_layer for val in layers_qs]) + 1 / 8.7, 2)
 	qs = BaseStructure.objects.filter(id=instance.id)
-	instance.R_custom = r_calc
+	instance.R_real = r_calc
 
 
 # Connect the signal to the signal handler

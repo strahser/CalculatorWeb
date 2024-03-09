@@ -7,6 +7,11 @@ class RoomI(ABC):
 	@abstractmethod
 	def window_area(self):
 		raise NotImplementedError
+	@property
+	@abstractmethod
+	def t_in_room(self):
+		raise NotImplementedError
+
 
 	@property
 	@abstractmethod

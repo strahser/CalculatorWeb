@@ -4,8 +4,8 @@
 
 
 {% block content %}
-   <div class="heading mb-4 mt-3" > {{ Name }}</div>
-
+    <p id="js-products" data-url="{% url 'HeatAndVentilation:filter_base_structure' %}"></p>
+   <div class="heading mb-4 mt-3"  > {{ Name }}  </div>
     {{ display_layers_create_table|safe }}
     <div class="row">
     <div class="col-6 mb-4">
@@ -27,39 +27,9 @@
       </div>
     </div>
   </div>
+{% block extra_js %}
+{#<script src="{% static 'assets/js/add_ajax.js' %}"></script>#}
+<script src="{% static 'assets/js/admin_function.js' %}"></script>
+{% endblock extra_js %}
 
-<script>
-const widget_list =['input','textarea','select']
-for (const widget_name of widget_list) {
-    const selector = document.querySelectorAll(widget_name)
-    for (const val of selector) {
-        if (val.type==='checkbox'){
-                   val.classList.add("form-check-input");
-        }
-        else {
-            val.classList.add("form-control");
-        }
-    }
-}
-    document.getElementById('category').addEventListener('change', function () {
-        var category_id = this.value;
-        $.ajax({
-            type: 'GET',
-            url: '/get-course/',
-            data: { 'category': category_id },
-            dataType: 'json',
-            success: function (data) {
-                var courseSelect = document.getElementById('course');
-                courseSelect.innerHTML = '';
-
-                data.forEach(function (course) {
-                    var option = document.createElement('option');
-                    option.value = course.id;
-                    option.text = course.name;
-                    courseSelect.add(option);
-                });
-            }
-        });
-    });
-</script>
 {% endblock content %}

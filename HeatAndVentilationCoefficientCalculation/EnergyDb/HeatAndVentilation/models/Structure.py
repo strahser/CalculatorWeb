@@ -3,11 +3,7 @@ from django.urls import reverse
 
 from HeatAndVentilationCoefficientCalculation.HeatCalculation.StructureThermalResistenceCoefficient import \
     get_normative_thermal_resistence_coefficient
-
 from HeatAndVentilationCoefficientCalculation.StaticData.OrientationData import OrientationData
-from django.utils.html import format_html
-
-from HeatAndVentilationCoefficientCalculation.StaticData.StructureTypeData import StructureTypeData
 
 
 class Structure(models.Model):
@@ -39,7 +35,7 @@ class Structure(models.Model):
 
     @property
     def R_real(self):
-        qs = Structure.objects.get(pk=self.pk).base_structures.R_custom
+        qs = Structure.objects.get(pk=self.pk).base_structures.R_real
         return qs
 
     @property
@@ -49,7 +45,7 @@ class Structure(models.Model):
 
     @property
     def R_Norm(self):
-        gsop = Structure.objects.get(pk=self.pk).room.building.get_gsop
+        gsop = Structure.objects.get(pk=self.pk).room.building.GSOP
         r_norm = get_normative_thermal_resistence_coefficient(gsop)[self.standard_structure_type]
         return round(r_norm, 2)
 

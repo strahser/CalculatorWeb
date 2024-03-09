@@ -1,5 +1,6 @@
 $(document).ready(function(){create_elements(); create_ajax();add_ajax_to_modal()})
 const target_url_="{% url 'HeatAndVentilation:check_thermal_resistence' %}"
+
 function create_elements() {
     $('<button type="button" class="btn btn-primary" id="add-html-button" data-bs-toggle="modal" data-bs-target="#exampleModal"> Рассчитать терм.сопр. </button>')
         .insertAfter('#id_R_custom');

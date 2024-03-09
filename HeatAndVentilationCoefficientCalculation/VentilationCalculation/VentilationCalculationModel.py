@@ -40,7 +40,7 @@ class VentilationData:
 		"""инфильтрация"""
 		infiltration = WindowInfiltration(self.building_height,
 		                                  self._climate_data.t_ot_middle,
-		                                  self._climate_data.t_in,
+		                                  self.room.t_in_room,
 		                                  self._climate_data.air_velocity_middle)
 		g_window = infiltration.g_inf_window(self.room.window_area).output_value
 		g_door = infiltration.g_inf_doors(self.room.door_area).output_value

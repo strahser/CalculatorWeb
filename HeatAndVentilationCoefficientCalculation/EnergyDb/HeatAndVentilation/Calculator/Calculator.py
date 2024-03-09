@@ -18,7 +18,7 @@ def create_room_structure_data_class(structures_list: [django.db.models.QuerySet
 	all_structures = []
 	for structure in structures_list:
 		structure_data_class = getattr(StructureTypeData, structure.standard_structure_type).value.class_value(
-			structure.name, structure.area, structure.R_custom
+			structure.name, structure.area, structure.R_real
 		)
 		all_structures.append(structure_data_class)
 	return all_structures

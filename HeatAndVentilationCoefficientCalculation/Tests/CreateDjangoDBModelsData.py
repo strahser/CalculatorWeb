@@ -1,12 +1,25 @@
 import dataclasses
-from pprint import pprint
-
-from HeatAndVentilation.models.BaseStructure import BaseStructure
+from StaticDB.models.SunRadiationData import SunRadiationData
+from StaticDB.models.ClimateData import ClimateData
 from HeatAndVentilation.models.Building import Building
 from HeatAndVentilation.models.Room import Room
+from HeatAndVentilation.models.BaseStructure import BaseStructure
 from HeatAndVentilation.models.Structure import Structure
+from StaticDB.models.StandardStructureLayer import StandardStructureLayer
 from HeatAndVentilationCoefficientCalculation.Tests.InputData import *
-from StaticDB.models.ClimateData import ClimateData
+
+
+def create_sun_radiation_data():
+	sr = SunRadiationData.objects.create()
+	print(sr)
+
+
+def create_climate_data():
+	cm = ClimateDataModel()
+	cm_dict = dataclasses.asdict(cm)
+	cm_dict['sun_radiation'] = SunRadiationData.objects.first()
+	cd = ClimateData.objects.create(**cm_dict)
+	print(cd)
 
 
 def create_building():
@@ -32,9 +45,23 @@ def create_base_structures():
 def create_structures():
 	for struct_data in structures1:
 		struct_data_dict = dataclasses.asdict(struct_data)
-		bs = BaseStructure.objects.filter(R_real=struct_data.base_structures.R_custom).first()
+		bs = BaseStructure.objects.filter(R_real=struct_data.base_structures.R_real).first()
 		room_ = Room.objects.first()
 		struct_data_dict['base_structures'] = bs
 		struct_data_dict['room'] = room_
 		st = Structure.objects.get_or_create(**struct_data_dict)
 		print(f"structure {st} add to db")
+
+
+def create_base_structure_layer():
+	StandardStructureLayer.objects.create()
+
+
+def create_all():
+	create_sun_radiation_data()
+	create_climate_data()
+	create_building()
+	create_room()
+	create_base_structures()
+	create_structures()
+	create_base_structure_layer()
