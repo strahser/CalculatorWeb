@@ -47,8 +47,8 @@ class BaseStructure(models.Model):
 		return f"{self.name}  {self.standard_structure_type}"
 
 	class Meta:
-		verbose_name = "Базовая конструкция"
-		verbose_name_plural = "Базовые конструкции"
+		verbose_name = "03 Базовая конструкция"
+		verbose_name_plural = "03 Базовые конструкции"
 		ordering = ['id']
 
 	@property

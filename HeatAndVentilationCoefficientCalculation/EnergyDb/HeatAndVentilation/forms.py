@@ -1,5 +1,6 @@
 from django import forms
 import calculation
+from django.forms import CheckboxInput
 
 from HeatAndVentilation.models.BaseStructure import BaseStructure
 from HeatAndVentilation.models.Building import Building
@@ -22,9 +23,11 @@ class BuildingSelectedForm(forms.Form):
         label="Выберите здание",
         queryset=qs,
         empty_label=None,
-        widget=forms.Select(attrs={'class': 'form-control'},
-                            ),
+        widget=forms.Select(attrs={'class': 'form-control'}, ),
     )
+    create_report = forms.BooleanField(required=False,
+                                            initial=False,
+                                            label='создать отчет?')
 
 
 class RoomForm(forms.ModelForm):
@@ -34,11 +37,13 @@ class RoomForm(forms.ModelForm):
 
 
 class StructureForm(forms.ModelForm):
-    width = forms.DecimalField(label='ширина', initial=1)
-    length = forms.DecimalField(label='длина', initial=1)
-    quantity = forms.DecimalField(label='количество', initial=1)
+    width = forms.DecimalField(label='Ширина', initial=1, help_text='введите для расчета площади автоматически')
+    length = forms.DecimalField(label='Длина', initial=1, help_text='введите для расчета площади автоматически')
+    quantity = forms.DecimalField(label='Колличество конструкций', initial=1,
+                                  help_text='введите для расчета площади автоматически')
     area = forms.DecimalField(
-        widget=calculation.FormulaInput('width*length*quantity'), label='Площадь'  # <- using single math expression
+        widget=calculation.FormulaInput('width*length*quantity'), label='Площадь Конструкции',
+        help_text='введите площадь, или расчитайте автоматически'  # <- using single math expression
     )
     structure_type = forms.ChoiceField(choices=[(val.name, val.value) for val in StructureTypeData],
                                        label="Типовая Конструкция",
@@ -50,7 +55,7 @@ class StructureForm(forms.ModelForm):
                   'base_structures', 'short_name', 'area', 'width', 'length', 'quantity']
         widgets = {
             'base_structures': forms.Select(
-                attrs={'class': 'form-control', 'readonly': True}
+                attrs={'class': 'form-control', 'readonly': True, }
             ),
         }
 

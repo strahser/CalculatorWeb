@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.utils.html import format_html
 from HeatAndVentilation.AdminData.AdminFilter import BuildingFilter, RoomFilter, StructureFilter, StructureDetailFilter
 from HeatAndVentilation.forms import StructureForm
@@ -9,6 +10,29 @@ from HeatAndVentilationCoefficientCalculation.EnergyDb.Utils.AdminUtils import d
     get_standard_display_list
 from HeatAndVentilationCoefficientCalculation.StaticData.StructureTypeData import StructureTypeData
 from django.utils.safestring import mark_safe
+
+
+class CustomAdminSite(AdminSite):
+    def get_app_list(self, request, app_label=None):
+        """
+        Return a sorted list of all the installed apps that have been
+        registered in this site.
+        """
+        ordering = {
+            "Building": 1,
+            "Room": 2,
+            "BaseStructure": 3,
+        }
+        app_dict = self._build_app_dict(request)
+        # a.sort(key=lambda x: b.index(x[0]))
+        # Sort the apps alphabetically.
+        app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
+
+        # Sort the models alphabetically within each app.
+        for app in app_list:
+            app['models'].sort(key=lambda x: ordering[x['name']])
+
+        return app_list
 
 
 @admin.register(Structure)

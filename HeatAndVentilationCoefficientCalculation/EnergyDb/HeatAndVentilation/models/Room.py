@@ -34,8 +34,8 @@ class Room(models.Model):
     update_stamp = models.DateTimeField(auto_now=True, verbose_name="дата изменения")
 
     class Meta:
-        verbose_name = "Помещение"
-        verbose_name_plural = "Помещения"
+        verbose_name = "02 Помещение"
+        verbose_name_plural = "02 Помещения"
 
     def __str__(self):
         return self.name
